@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main # Adjust the branch name as needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Push to Jenkins if tests pass
+      if: ${{ success() }}
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git push https://github.com/vatanji/todo-cicd.git main
